@@ -1,0 +1,23 @@
+name: build
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: current
+      - run: unzip -q lumen-project.zip
+      - run: gradle clean build --no-daemon
+        working-directory: lumen
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lumen-jar
+          path: |
+            lumen/build/libs/*.jar
+            !lumen/build/libs/*-sources.jar
