@@ -12,8 +12,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: current
-      
       - run: unzip -q "lumen-project (1).zip"
+      - run: sed -i 's/cam.getPos()/cam.getCameraPos()/' lumen/src/main/java/dev/lumen/util/RenderUtil.java
       - run: gradle clean build --no-daemon
         working-directory: lumen
       - uses: actions/upload-artifact@v4
