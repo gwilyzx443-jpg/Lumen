@@ -1,24 +1,29 @@
 name: build
-on: workflow_dispatch
+on:
+  push:
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: ZIP'i ac
+        run: unzip -q '*.zip'
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+      - name: Testler
+        working-directory: lumen
+        continue-on-error: true
+        run: sh selftest/run.sh
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: current
-      - run: unzip -q "lumen-project (1).zip"
-      - run: sed -i 's/cam.getPos()/cam.getCameraPos()/' lumen/src/main/java/dev/lumen/util/RenderUtil.java
-      - run: gradle clean build --no-daemon
+          gradle-version: 9.9.2
+      - name: Derle
         working-directory: lumen
+        run: gradle clean build --no-daemon
       - uses: actions/upload-artifact@v4
         with:
-          name: lumen-jar
-          path: |
-            lumen/build/libs/*.jar
-            !lumen/build/libs/*-sources.jar
+          name: Lumen-2.2.1-1.21.11
+          path: lumen/build/libs/Lumen-2.2.1-1.21.11.jar
