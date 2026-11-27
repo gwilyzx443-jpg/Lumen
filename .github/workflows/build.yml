@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: ZIP'i ac
-        run: unzip -q '*.zip'
+        run: rm -rf lumen && unzip -qo '*.zip'
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
