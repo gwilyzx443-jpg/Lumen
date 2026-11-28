@@ -7,23 +7,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: ZIP'i ac
-            run: ls -l *.zip; rm -rf lumen && unzip -qo '*2.2.1*.zip'
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+      - name: Zip'i ac
+        run: |
+          set -e
+          Z=$(ls -1 *.zip | head -n 1)
+          mkdir -p unz proj
+          unzip -q "$Z" -d unz
+          B=$(find unz -name build.gradle | head -n 1)
+          test -n "$B"
+          cp -a "$(dirname "$B")"/. proj/
       - name: Testler
-        working-directory: lumen
+        working-directory: proj
         continue-on-error: true
         run: sh selftest/run.sh
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 9.9.2
+          gradle-version: 9.2.1
+          build-root-directory: proj
       - name: Derle
-        working-directory: lumen
+        working-directory: proj
         run: gradle clean build --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: Lumen-2.2.1-1.21.11
-          path: lumen/build/libs/Lumen-2.2.1-1.21.11.jar
+          path: proj/build/libs/Lumen-2.2.1-1.21.11.jar
